@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Settings - CyberSecure</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Inter, system-ui, Arial, sans-serif;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background: #0f1419;
+      color: #fff;
+    }
+
+    body.light-mode {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .header {
+      background: #00bfff;
+      padding: 20px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode .header {
+      background: #00bfff;
+    }
+
+    .light-mode .header {
+      background: #00bfff;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #051225;
+      font-size: 28px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 40px;
+      border-radius: 8px;
+    }
+
+    .dark-mode .container {
+      background: #131820;
+      border: 1px solid #2d3561;
+    }
+
+    .light-mode .container {
+      background: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .subtitle {
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .dark-mode .subtitle {
+      color: #9aa3b2;
+    }
+
+    .light-mode .subtitle {
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .dark-mode label {
+      color: #b8c0cc;
+    }
+
+    .light-mode label {
+      color: #333;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid;
+      font-size: 14px;
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    .dark-mode input[type="text"],
+    .dark-mode select {
+      border-color: #2d3561;
+      background: #0f1720;
+      color: #fff;
+    }
+
+    .light-mode input[type="text"],
+    .light-mode select {
+      border-color: #ddd;
+      background: #fff;
+      color: #333;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #00bfff;
+    }
+
+    input[type="text"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 30px;
+      margin-top: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+
+    .dark-mode input[type="radio"] {
+      accent-color: #00bfff;
+    }
+
+    .light-mode input[type="radio"] {
+      accent-color: #00bfff;
+    }
+
+    .radio-label {
+      cursor: pointer;
+      margin: 0;
+      font-weight: normal;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .checkbox-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+
+    .dark-mode input[type="checkbox"] {
+      accent-color: #00bfff;
+    }
+
+    .light-mode input[type="checkbox"] {
+      accent-color: #00bfff;
+    }
+
+    .checkbox-label {
+      cursor: pointer;
+      margin: 0;
+      font-weight: normal;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      margin-bottom: 20px;
+    }
+
+    .save {
+      background: #00bfff;
+      color: #051225;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: opacity 0.3s;
+    }
+
+    .save:hover {
+      opacity: 0.9;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .dark-mode .back-link a {
+      color: #00bfff;
+      text-decoration: none;
+    }
+
+    .light-mode .back-link a {
+      color: #00bfff;
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    .success-message {
+      display: none;
+      background: #00b359;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <div class="header">
+    <h1>Account Settings</h1>
+  </div>
+
+  <div class="container">
+    <p class="subtitle">Settings for the currently logged-in user (demo).</p>
+    
+    <div id="successMessage" class="success-message">Settings saved successfully!</div>
+
+    <form id="settingsForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" value="Analyst Demo" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" value="analyst@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <input type="text" id="role" value="Analyst" disabled />
+      </div>
+
+      <div class="form-group">
+        <label>Notification Preference</label>
+        <div class="checkbox-group">
+          <label class="checkbox-option">
+            <input type="checkbox" name="notification" value="email" />
+            <span class="checkbox-label">Email</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" name="notification" value="sms" />
+            <span class="checkbox-label">SMS</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" name="notification" value="none" />
+            <span class="checkbox-label">None</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Theme Mode</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="theme" value="dark" checked />
+            <span class="radio-label">Dark</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="theme" value="light" />
+            <span class="radio-label">Light</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="save">Save Settings</button>
+      </div>
+    </form>
+
+    <div class="back-link">
+      <a href="/">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    // Initialize theme from localStorage or default to dark
+    const savedTheme = localStorage.getItem('appTheme') || 'dark';
+    document.body.className = savedTheme + '-mode';
+    document.querySelector(`input[name="theme"][value="${savedTheme}"]`).checked = true;
+
+    // Load saved notification preferences
+    const savedNotifications = JSON.parse(localStorage.getItem('notifications') || '["email"]');
+    document.querySelectorAll('input[name="notification"]').forEach((checkbox) => {
+      if (savedNotifications.includes(checkbox.value)) {
+        checkbox.checked = true;
+      }
+    });
+
+    // Theme switching
+    document.querySelectorAll('input[name="theme"]').forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        const theme = e.target.value;
+        document.body.className = theme + '-mode';
+        localStorage.setItem('appTheme', theme);
+      });
+    });
+
+    // Form submission
+    document.getElementById('settingsForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Get selected notifications
+      const selectedNotifications = Array.from(
+        document.querySelectorAll('input[name="notification"]:checked')
+      ).map((checkbox) => checkbox.value);
+
+      // Get theme
+      const theme = document.querySelector('input[name="theme"]:checked').value;
+
+      // Save all settings to localStorage
+      localStorage.setItem('notifications', JSON.stringify(selectedNotifications));
+      localStorage.setItem('appTheme', theme);
+
+      // Apply theme globally
+      document.body.className = theme + '-mode';
+      
+      // Show success message
+      const successMsg = document.getElementById('successMessage');
+      successMsg.classList.add('show');
+
+      // Notify parent window/tab of theme change via postMessage
+      if (window.opener) {
+        window.opener.postMessage({
+          type: 'THEME_CHANGED',
+          theme: theme
+        }, window.location.origin);
+      }
+
+      // Try to notify all windows via storage event
+      const timestamp = new Date().getTime();
+      localStorage.setItem('themeChangeTimestamp', timestamp.toString());
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
