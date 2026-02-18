@@ -24,9 +24,11 @@ const getAttacks = async (req, res) => {
       { dstIP: searchRegex },
       { analystNotes: searchRegex },
     ];
-    // If search is numeric, also match dstPort
+    // If search is numeric, also match dstPort or eventId
     if (!isNaN(parseInt(search))) {
-      filter.$or.push({ dstPort: parseInt(search) });
+      const searchNum = parseInt(search);
+      filter.$or.push({ dstPort: searchNum });
+      filter.$or.push({ eventId: searchNum });
     }
     // If search matches a label name? Could be done but not necessary
   }

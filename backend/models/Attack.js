@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const AttackSchema = new mongoose.Schema({
+  eventId: { type: Number, unique: true }, // Sequential ID for display
   // Network flow features (from your Excel)
   dstPort: Number,
   flowDuration: Number,
@@ -39,10 +40,10 @@ const AttackSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
 
   // SOC workflow
-  status: { 
-    type: String, 
-    enum: ['new', 'working', 'escalated', 'remediated'], 
-    default: 'new' 
+  status: {
+    type: String,
+    enum: ['new', 'working', 'escalated', 'remediated'],
+    default: 'new'
   },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   analystNotes: String,
