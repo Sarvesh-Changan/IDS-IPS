@@ -1,16 +1,15 @@
 const express = require('express');
 const { getAttacks, getAttackById, updateAttack, takeAction } = require('../controllers/attackController');
-const { protect } = require('../middleware/auth');
-const { requireCsrf } = require('../middleware/csrf');
 const router = express.Router();
 
+// Logic simplified for public access as per request to remove auth
 router.route('/')
-  .get(protect, getAttacks);
+  .get(getAttacks);
 
 router.route('/:id')
-  .get(protect, getAttackById)
-  .patch(protect, requireCsrf, updateAttack);
+  .get(getAttackById)
+  .patch(updateAttack);
 
-router.post('/:id/action', protect, requireCsrf, takeAction);
+router.post('/:id/action', takeAction);
 
 module.exports = router;

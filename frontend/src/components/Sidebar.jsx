@@ -1,75 +1,91 @@
 import React, { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
+import { THEME_COLORS } from '../themeConfig';
 
-export default function Sidebar({ setActiveTab, activeTab }) {
-  const [isOpen, setIsOpen] = useState(true);
+export default function Sidebar({ setActiveTab, activeTab, isOpen, setIsOpen }) {
+  const { theme, toggleTheme } = useTheme();
 
   const menuItems = [
-    { label: 'Alerts', id: 'alerts' },
-    { label: 'Dashboard', id: 'dashboard' },
-    { label: 'Service Requests', id: 'requests' },
-    { label: 'My Assets', id: 'assets' },
-    { label: 'Forensic Analysis', id: 'forensic' }
+    { label: 'Alert Center', id: 'alerts', icon: '🚨' },
+    { label: 'System Intel', id: 'dashboard', icon: '📊' },
+    { label: 'Ops Protocols', id: 'requests', icon: '⚡' },
+    { label: 'Node Assets', id: 'assets', icon: '🖥️' },
+    { label: 'Deep Forensic', id: 'forensic', icon: '🔍' }
   ];
 
   return (
     <aside
-      className={`sidebar fixed inset-y-0 left-0 z-50 flex flex-col border-r border-slate-800 bg-gradient-to-br from-slate-950 to-slate-900 shadow-2xl transition-all duration-300 ${
-        isOpen ? 'w-72 translate-x-0' : 'w-20 -translate-x-full md:translate-x-0'
-      }`}
+      className={`sidebar fixed inset-y-0 left-0 z-50 flex flex-col border-r border-theme bg-sidebar shadow-2xl transition-all duration-500 ease-in-out ${isOpen ? 'w-72' : 'w-24'
+        }`}
     >
-      <div className="sidebar-header relative flex items-center justify-between gap-3 border-b border-slate-800 px-4 py-6">
-        <div className="logo flex items-center justify-center gap-3">
-          <div className="logo-icon flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500 text-xs font-bold text-slate-950 shadow-[0_0_18px_rgba(56,189,248,0.7)]">
+      <div className="sidebar-header relative flex items-center justify-between gap-3 border-b border-theme px-5 py-8">
+        <div className={`logo flex items-center gap-4 transition-all duration-300 ${!isOpen && 'scale-0'}`}>
+          <div className="logo-icon flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-accent-primary text-[10px] font-black tracking-tighter text-inverse shadow-[0_0_30px_rgba(0,240,255,0.4)] animate-pulse">
             SOC
           </div>
-          <div className="logo-text flex flex-col">
-            <div className="brand-line text-sm font-bold tracking-tight text-sky-400">
+          <div className="logo-text flex flex-col overflow-hidden">
+            <div className="brand-line text-lg font-black uppercase tracking-tight text-accent-primary leading-none">
               CyberSecure
             </div>
-            <div className="brand-sub text-xs text-slate-400">
-              ML Powered IDS and IPS
+            <div className="brand-sub text-[9px] font-black uppercase tracking-widest text-muted mt-1 whitespace-nowrap">
+              ML-IDS V2.0
             </div>
           </div>
         </div>
         <button
-          className="sidebar-inline-toggle flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700 bg-slate-900/70 text-sky-400 shadow-sm transition-transform duration-150 hover:bg-slate-800 hover:shadow-md"
+          className={`sidebar-inline-toggle absolute -right-4 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-theme bg-card text-accent-primary shadow-xl transition-all hover:scale-110 active:scale-95 z-10 ${!isOpen && 'right-8'}`}
           onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-          title={isOpen ? 'Collapse' : 'Expand'}
         >
-          {isOpen ? '✕' : '☰'}
+          {isOpen ? '◀' : '▶'}
         </button>
       </div>
 
-      <nav className="sidebar-nav flex-1 overflow-y-auto py-10">
-        <ul className="nav-list flex flex-col items-stretch gap-1 px-2">
+      <nav className="sidebar-nav flex-1 overflow-y-auto py-12 px-3 custom-scrollbar">
+        <ul className="nav-list flex flex-col gap-3">
           {menuItems.map((item) => (
-            <li key={item.id} className="flex justify-center">
+            <li key={item.id}>
               <button
                 type="button"
                 onClick={() => setActiveTab(item.id)}
-                className={`nav-link flex w-full items-center justify-center rounded-md border-l-4 px-3 py-2 text-sm font-medium transition-all duration-200 ${
-                  activeTab === item.id
-                    ? 'active border-sky-500 bg-sky-500/15 text-sky-300'
-                    : 'border-transparent text-slate-400 hover:border-sky-500 hover:bg-slate-800 hover:text-sky-200'
-                }`}
+                className={`nav-link group relative flex w-full items-center gap-4 rounded-2xl px-4 py-4 transition-all duration-300 ${activeTab === item.id
+                  ? 'bg-accent-primary text-inverse shadow-xl shadow-accent-primary/20 translate-x-1'
+                  : 'text-muted hover:bg-hover hover:text-main'
+                  }`}
               >
-                <span className="nav-label truncate">
+                <span className={`text-lg transition-transform duration-300 group-hover:scale-125 ${activeTab === item.id ? 'scale-110' : ''}`}>
+                  {item.icon}
+                </span>
+                <span className={`nav-label text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${!isOpen ? 'opacity-0 scale-0 w-0' : 'opacity-100 scale-100'}`}>
                   {item.label}
                 </span>
+                {activeTab === item.id && (
+                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 h-8 w-1.5 rounded-full bg-white shadow-lg"></div>
+                )}
               </button>
             </li>
           ))}
         </ul>
       </nav>
 
-      <div className="sidebar-footer flex items-center gap-2 border-t border-slate-800 px-3 py-4">
-        <a
-          className="feedback-btn flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-sky-500 to-sky-400 px-3 py-2 text-sm font-semibold text-slate-950 shadow-lg transition-transform duration-150 hover:-translate-y-0.5"
-          href="/settings.html"
+      <div className="sidebar-footer flex flex-col gap-3 border-t border-theme p-5">
+        <button
+          onClick={toggleTheme}
+          className="theme-toggle-btn flex w-full items-center justify-center gap-3 rounded-2xl border border-theme bg-card px-4 py-4 text-[10px] font-black uppercase tracking-widest text-main transition-all hover:bg-hover hover:border-accent-primary group shadow-inner"
         >
-          <span>Settings</span>
-        </a>
+          <span className="group-hover:rotate-45 transition-transform duration-500">
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </span>
+          <span className={`${!isOpen && 'hidden'}`}>
+            Shift Protocol
+          </span>
+        </button>
+        <button
+          className="admin-btn flex w-full items-center justify-center gap-3 rounded-2xl bg-sidebar border border-theme hover:border-accent-primary px-4 py-4 text-[10px] font-black uppercase tracking-widest text-muted transition-all hover:text-accent-primary shadow-sm"
+          onClick={() => alert('Secure Ops Console Access restricted.')}
+        >
+          <span>㊙️</span>
+          <span className={`${!isOpen && 'hidden'}`}>Admin Ops</span>
+        </button>
       </div>
     </aside>
   );

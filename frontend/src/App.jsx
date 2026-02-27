@@ -1,57 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Sidebar from './components/Sidebar';
 import AlertsDashboard from './components/AlertsDashboard';
 import Dashboard from './components/Dashboard';
 import ServiceRequests from './components/ServiceRequests';
 import ForensicAnalysis from './components/ForensicAnalysis';
 import MyAssets from './components/MyAssets';
-import Login from './pages/Login';
 import Analyze from './pages/Analyze';
-import AdminRegisterAnalyst from './pages/AdminRegisterAnalyst';
-import './theme.css';
+// theme.css removed in favor of 60-30-10 variables in index.css
 
-// Main dashboard layout (used for authenticated routes except Analyze)
+// Main dashboard layout (auth-free as per request)
 const DashboardLayout = () => {
   const [activeTab, setActiveTab] = useState('alerts');
-  const { user } = useAuth();
-
-  // Theme initialization (from original App)
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('appTheme') || 'dark';
-    document.body.className = `${savedTheme}-mode`;
-
-    const handleStorageChange = (e) => {
-      if (e.key === 'appTheme' || e.key === 'themeChangeTimestamp') {
-        const newTheme = localStorage.getItem('appTheme') || 'dark';
-        document.body.className = `${newTheme}-mode`;
-      }
-    };
-
-    const handlePostMessage = (e) => {
-      if (e.data && e.data.type === 'THEME_CHANGED') {
-        const newTheme = e.data.theme || 'dark';
-        document.body.className = `${newTheme}-mode`;
-        localStorage.setItem('appTheme', newTheme);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('message', handlePostMessage);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('message', handlePostMessage);
-    };
-  }, []);
-
-  if (!user) return <Navigate to="/login" />;
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="app-container flex h-screen bg-slate-950">
-      <Sidebar setActiveTab={setActiveTab} activeTab={activeTab} />
-      <div className="main-content ml-[280px] flex flex-1 flex-col overflow-hidden transition-[margin-left] duration-300 md:ml-[280px]">
+    <div className="app-container flex h-screen bg-main overflow-hidden">
+      <Sidebar
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
+      />
+      <div
+        className={`main-content flex flex-1 flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'md:ml-72' : 'md:ml-24'}`}
+      >
         {activeTab === 'alerts' && <AlertsDashboard />}
         {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'requests' && <ServiceRequests />}
@@ -65,14 +39,13 @@ const DashboardLayout = () => {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
+      <ThemeProvider>
         <Routes>
-          <Route path="/login" element={<Login />} />
           <Route path="/" element={<DashboardLayout />} />
           <Route path="/analyze/:id" element={<Analyze />} />
-          <Route path="/admin/register-analyst" element={<AdminRegisterAnalyst />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

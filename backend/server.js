@@ -7,9 +7,7 @@ const { initSocket } = require('./socket');
 const { startAttackGenerator } = require('./utils/attackGenerator');
 
 // Import routes
-const authRoutes = require('./routes/auth');
 const attackRoutes = require('./routes/attacks');
-const adminRoutes = require('./routes/admin');
 
 const app = express();
 const server = http.createServer(app);
@@ -18,13 +16,11 @@ const server = http.createServer(app);
 connectDB();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'], credentials: true }));
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', authRoutes);
 app.use('/api/attacks', attackRoutes);
-app.use('/api/admin', adminRoutes);
 
 // Initialize Socket.IO
 const io = initSocket(server);

@@ -13,28 +13,30 @@ export default function StatsCards() {
       {cards.map(card => (
         <div
           key={card.id}
-          className={`stat-card flex min-h-[4.5rem] flex-col justify-center rounded-lg border border-white/5 bg-gradient-to-b from-white/5 to-black/40 px-4 py-3 shadow-lg ${
-            card.color === 'critical'
-              ? 'border-l-4 border-l-red-400'
+          className={`stat-card flex min-h-[4.5rem] flex-col justify-center rounded-lg border border-theme bg-card px-4 py-3 shadow-lg transition-transform hover:scale-[1.02] ${card.color === 'critical'
+            ? 'border-l-4 border-l-accent-danger'
             : card.color === 'blocked'
-              ? 'border-l-4 border-l-emerald-400'
-            : card.color === 'suspicious'
-              ? 'border-l-4 border-l-amber-400'
-              : 'border-l-4 border-l-sky-400'
-          }`}
+              ? 'border-l-4 border-l-accent-success'
+              : card.color === 'suspicious'
+                ? 'border-l-4 border-l-accent-warning'
+                : 'border-l-4 border-l-accent-primary'
+            }`}
         >
           <div className="card-top flex items-center gap-3">
             <div
-              className="card-icon h-9 w-9 rounded-lg bg-white/10"
-              aria-hidden
+              className={`card-icon h-9 w-9 rounded-lg flex items-center justify-center ${card.color === 'critical' ? 'bg-accent-danger/10 text-accent-danger'
+                : card.color === 'blocked' ? 'bg-accent-success/10 text-accent-success'
+                  : card.color === 'suspicious' ? 'bg-accent-warning/10 text-accent-warning'
+                    : 'bg-accent-primary/10 text-accent-primary'
+                }`}
             >
-              {/* Decorative */}
+              <div className="h-2 w-2 rounded-full bg-current shadow-[0_0_8px_currentColor]" />
             </div>
-            <div className="card-value text-xl font-bold text-slate-50">
+            <div className="card-value text-xl font-bold text-main">
               {card.value}
             </div>
           </div>
-          <div className="card-title mt-1 text-xs font-medium text-slate-300">
+          <div className="card-title mt-1 text-xs font-medium text-muted uppercase tracking-wider">
             {card.title}
           </div>
         </div>

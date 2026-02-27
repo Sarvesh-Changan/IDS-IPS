@@ -8,8 +8,7 @@ const { requireCsrf } = require('../middleware/csrf');
 const router = express.Router();
 
 // All admin routes require authentication and 'admin' role
-router.use(protect);
-router.use(authorize('admin'));
+// Admin routes are now public as per request to remove login system
 router.use(requireCsrf);
 
 router.route('/users')

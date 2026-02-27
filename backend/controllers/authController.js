@@ -46,7 +46,7 @@ const register = async (req, res) => {
         userAgent: req.headers['user-agent'],
         details: { error: err.message }
       });
-    } catch (_) {}
+    } catch (_) { }
     res.status(500).json({ message: err.message });
   }
 };
@@ -68,7 +68,7 @@ const login = async (req, res) => {
           userAgent: req.headers['user-agent'],
           details: { email }
         });
-      } catch (_) {}
+      } catch (_) { }
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     const csrfToken = crypto.randomBytes(24).toString('hex');
@@ -81,7 +81,7 @@ const login = async (req, res) => {
         userAgent: req.headers['user-agent'],
         details: {}
       });
-    } catch (_) {}
+    } catch (_) { }
     res.json({
       _id: user._id,
       username: user.username,
@@ -99,4 +99,19 @@ const getMe = async (req, res) => {
   res.json(req.user);
 };
 
-module.exports = { register, login, getMe };
+const updateTheme = async (req, res) => {
+  try {
+    const { theme } = req.body;
+    if (!['light', 'dark'].includes(theme)) {
+      return res.status(400).json({ message: 'Invalid theme' });
+    }
+    const user = await User.findById(req.user._id);
+    user.theme = theme;
+    await user.save();
+    res.json({ success: true, theme: user.theme });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { register, login, getMe, updateTheme };

@@ -36,7 +36,7 @@ function generateFeatureValuesForTimeRange(days = 7) {
   // Multiplier based on time range (longer period = higher cumulative values)
   const multiplier = Math.max(1, Math.floor(days / 7));
   const rand = (min, max, fixed = 0) => Number((Math.random() * (max - min) + min).toFixed(fixed));
-  
+
   return {
     'Flow Duration': Math.floor(rand(100, 100000 * multiplier)),
     'Total Fwd Pkts': Math.floor(rand(50, 500 * multiplier)),
@@ -91,11 +91,11 @@ export default function ForensicAnalysis() {
 
   const exportAsCSV = () => {
     if (!features || !ip) return;
-    
+
     // Add feature values
     const featureHeaders = ['Feature', 'Value'];
     const featureData = Object.entries(features).map(([k, v]) => [k, v.toString()]);
-    
+
     // Create CSV content with header and data
     let csv = 'IP Address,' + ip + '\n';
     csv += 'Origin,' + (meta?.origin || 'N/A') + '\n';
@@ -103,7 +103,7 @@ export default function ForensicAnalysis() {
     csv += 'Times Seen,' + totalIncidents + '\n\n';
     csv += featureHeaders.join(',') + '\n';
     csv += featureData.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-    
+
     // Create blob and download
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -119,7 +119,7 @@ export default function ForensicAnalysis() {
 
   const exportAsPDF = async () => {
     if (!features || !ip) return;
-    
+
     try {
       // Create a temporary container for the PDF content
       const pdfContainer = document.createElement('div');
@@ -130,14 +130,14 @@ export default function ForensicAnalysis() {
       pdfContainer.style.color = '#fff';
       pdfContainer.style.padding = '40px';
       pdfContainer.style.fontFamily = 'Arial, sans-serif';
-      
+
       // Add header
       const header = document.createElement('h1');
       header.textContent = 'Forensic Analysis Report';
       header.style.marginBottom = '20px';
       header.style.color = '#00bfff';
       pdfContainer.appendChild(header);
-      
+
       // Add metadata
       const metaSection = document.createElement('div');
       metaSection.style.marginBottom = '30px';
@@ -151,11 +151,11 @@ export default function ForensicAnalysis() {
         <p><strong>Times Seen (Last ${timeRange} days):</strong> ${totalIncidents}</p>
       `;
       pdfContainer.appendChild(metaSection);
-      
+
       // Add chart section
       const chartSection = document.createElement('div');
       chartSection.style.marginBottom = '30px';
-      
+
       if (chartRef.current) {
         const chartCanvas = await html2canvas(chartRef.current, {
           backgroundColor: '#0f1419',
@@ -168,22 +168,22 @@ export default function ForensicAnalysis() {
         chartSection.appendChild(chartImage);
       }
       pdfContainer.appendChild(chartSection);
-      
+
       // Add details section
       const detailsSection = document.createElement('div');
       detailsSection.style.marginTop = '30px';
-      
+
       const detailsTitle = document.createElement('h2');
       detailsTitle.textContent = 'Detailed Feature Values';
       detailsTitle.style.color = '#00bfff';
       detailsTitle.style.marginBottom = '15px';
       detailsSection.appendChild(detailsTitle);
-      
+
       const detailsTable = document.createElement('table');
       detailsTable.style.width = '100%';
       detailsTable.style.borderCollapse = 'collapse';
       detailsTable.style.fontSize = '12px';
-      
+
       // Add table headers
       const headerRow = detailsTable.insertRow();
       const th1 = document.createElement('th');
@@ -192,72 +192,72 @@ export default function ForensicAnalysis() {
       th1.style.padding = '8px';
       th1.style.borderBottom = '2px solid #2d3561';
       th1.style.backgroundColor = '#1a1f2e';
-      
+
       const th2 = document.createElement('th');
       th2.textContent = 'Value';
       th2.style.textAlign = 'right';
       th2.style.padding = '8px';
       th2.style.borderBottom = '2px solid #2d3561';
       th2.style.backgroundColor = '#1a1f2e';
-      
+
       headerRow.appendChild(th1);
       headerRow.appendChild(th2);
-      
+
       // Add table data
-      Object.entries(features).forEach(([ key, value ], idx) => {
+      Object.entries(features).forEach(([key, value], idx) => {
         const row = detailsTable.insertRow();
         row.style.backgroundColor = idx % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent';
-        
+
         const cell1 = row.insertCell();
         cell1.textContent = key;
         cell1.style.padding = '8px';
         cell1.style.borderBottom = '1px solid #242b3a';
-        
+
         const cell2 = row.insertCell();
         cell2.textContent = value;
         cell2.style.textAlign = 'right';
         cell2.style.padding = '8px';
         cell2.style.borderBottom = '1px solid #242b3a';
       });
-      
+
       detailsSection.appendChild(detailsTable);
       pdfContainer.appendChild(detailsSection);
-      
+
       document.body.appendChild(pdfContainer);
-      
+
       // Convert to canvas
       const canvas = await html2canvas(pdfContainer, {
         backgroundColor: '#0f1419',
         scale: 2
       });
-      
+
       // Create PDF
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
       });
-      
+
       const imgData = canvas.toDataURL('image/png');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       const imgHeight = (canvas.height * pageWidth) / canvas.width;
-      
+
       let heightLeft = imgHeight;
       let position = 0;
-      
+
       pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
       heightLeft -= pageHeight;
-      
+
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
         heightLeft -= pageHeight;
       }
-      
+
       pdf.save(`forensic-analysis-${ip}-${timeRange}days.pdf`);
-      
+
       document.body.removeChild(pdfContainer);
       setShowExportMenu(false);
     } catch (error) {
@@ -273,141 +273,142 @@ export default function ForensicAnalysis() {
   const rightEntries = featureEntries.slice(half);
 
   return (
-    <div className="forensic-root mt-4 px-4 py-6 text-slate-100 md:px-8">
-      <div className="forensic-header mb-4">
-        <h1 className="mb-1 text-2xl font-semibold tracking-tight">Forensic Analysis</h1>
-        <p className="text-sm text-slate-400">
-          Enter an IP address to view forensic features and history.
+    <div className="forensic-root flex-1 h-full overflow-y-auto px-4 py-8 text-main md:px-10 bg-main transition-all duration-300 scroll-smooth">
+      <div className="forensic-header mb-10">
+        <h1 className="mb-2 text-2xl font-black uppercase tracking-tight text-accent-primary">Forensic Intelligence Analysis</h1>
+        <p className="text-sm text-muted font-medium">
+          Enter an IP coordinate to extract deep-flow forensic signatures and historical trajectory.
         </p>
       </div>
 
-      <div className="forensic-controls mb-4 flex flex-wrap items-center gap-3">
-        <input
-          className="forensic-input w-72 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-sky-400 focus:ring-1 focus:ring-sky-400"
-          placeholder="Enter IP (e.g. 203.0.113.5)"
-          value={ip}
-          onChange={(e) => setIp(e.target.value.replace(/[^0-9.]/g, ''))}
-        />
+      <div className="forensic-controls mb-8 flex flex-wrap items-center gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <input
+            className="forensic-input w-full rounded-xl border border-theme bg-card px-4 py-3 text-sm text-main outline-none placeholder:text-muted/50 focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10 transition-all font-mono"
+            placeholder="COORD-IP (e.g. 203.0.113.5)"
+            value={ip}
+            onChange={(e) => setIp(e.target.value.replace(/[^0-9.]/g, ''))}
+          />
+        </div>
         <button
-          className="analyze-btn rounded-lg bg-gradient-to-r from-sky-400 to-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 shadow hover:brightness-95"
+          className="analyze-btn rounded-xl bg-accent-primary px-8 py-3 text-sm font-black uppercase tracking-widest text-inverse shadow-lg shadow-accent-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
           onClick={handleAnalyze}
         >
-          Analyze
+          Execute Analysis
         </button>
         {features && (
-          <>
-            <select
-              className="time-range-select min-w-[130px] rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm font-medium text-slate-100 outline-none ring-sky-400 transition focus:border-sky-400 focus:ring-1"
-              value={timeRange}
-              onChange={handleTimeRangeChange}
-            >
-              <option value={1}>1 Day</option>
-              <option value={7}>7 Days</option>
-              <option value={15}>15 Days</option>
-              <option value={30}>1 Month</option>
-              <option value={90}>3 Months</option>
-            </select>
-            
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative">
+              <select
+                className="time-range-select appearance-none min-w-[140px] rounded-xl border border-theme bg-card px-4 py-3 text-sm font-bold text-main outline-none ring-accent-primary/20 transition-all hover:bg-hover focus:border-accent-primary focus:ring-4 cursor-pointer"
+                value={timeRange}
+                onChange={handleTimeRangeChange}
+              >
+                <option value={1}>24H Window</option>
+                <option value={7}>07D Window</option>
+                <option value={15}>15D Window</option>
+                <option value={30}>30D Cycle</option>
+                <option value={90}>QTR Cycle</option>
+              </select>
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[10px] text-muted font-bold">▼</span>
+            </div>
+
             <div className="export-dropdown-container relative">
               <button
-                className="export-btn min-w-[120px] rounded-lg border border-slate-700 bg-slate-950 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-sky-400 hover:bg-slate-900 hover:text-sky-300"
+                className="export-btn min-w-[130px] rounded-xl border border-theme bg-card px-4 py-3 text-sm font-bold text-accent-primary transition-all hover:bg-accent-primary hover:text-inverse shadow-sm"
                 onClick={() => setShowExportMenu(!showExportMenu)}
               >
-                ⬇ Export
+                ⬇ Export Dossier
               </button>
               {showExportMenu && (
-                <div className="export-menu absolute right-0 top-11 z-20 min-w-[190px] overflow-hidden rounded-lg border border-slate-700 bg-slate-950 shadow-xl">
+                <div className="export-menu absolute right-0 top-14 z-20 min-w-[220px] overflow-hidden rounded-2xl border border-theme bg-sidebar p-1.5 shadow-2xl animate-in fade-in zoom-in-95">
                   <button
-                    className="export-option block w-full border-b border-slate-800 px-4 py-2 text-left text-sm text-slate-200 hover:bg-sky-500/10 hover:text-sky-300"
+                    className="export-option flex items-center gap-3 w-full rounded-xl px-4 py-3 text-left text-sm font-bold text-main hover:bg-accent-primary hover:text-inverse transition-all"
                     onClick={exportAsCSV}
                   >
-                    📄 Export as CSV
+                    <span>📑</span> CSV Audit Data
                   </button>
                   <button
-                    className="export-option block w-full px-4 py-2 text-left text-sm text-slate-200 hover:bg-sky-500/10 hover:text-sky-300"
+                    className="export-option flex items-center gap-3 w-full rounded-xl px-4 py-3 text-left text-sm font-bold text-main hover:bg-accent-primary hover:text-inverse transition-all"
                     onClick={exportAsPDF}
                   >
-                    📑 Export as PDF
+                    <span>📁</span> PDF Intelligence Report
                   </button>
                 </div>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
 
       {features && (
-        <div className="forensic-body flex flex-col gap-4">
-          <div className="forensic-meta flex flex-wrap gap-4 rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm">
-            <div className="text-slate-200">
-              <strong>IP:</strong> {ip}
+        <div className="forensic-body flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="forensic-meta grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 rounded-3xl border border-theme bg-sidebar px-6 py-5 shadow-inner">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted mb-1">Target Address</span>
+              <span className="text-sm font-mono font-bold text-accent-primary underline decoration-accent-primary/30 underline-offset-4">{ip}</span>
             </div>
-            <div className="text-slate-200">
-              <strong>Origin:</strong> {meta?.origin}
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted mb-1">Geo Origin</span>
+              <span className="text-sm font-bold text-main">{meta?.origin}</span>
             </div>
-            <div className="text-slate-200">
-              <strong>Registered To:</strong> {meta?.company}
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted mb-1">Registered Entity</span>
+              <span className="text-sm font-bold text-main truncate">{meta?.company}</span>
             </div>
-            <div className="text-slate-200">
-              <strong>Times Seen:</strong> {totalIncidents}
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted mb-1">Threat Occurrences</span>
+              <span className="text-sm font-mono font-black text-accent-danger">{totalIncidents} SEC-EVENTS</span>
             </div>
           </div>
 
           <div
-            className="forensic-chart rounded-lg border border-slate-800 bg-slate-950 px-4 py-3"
+            className="forensic-chart rounded-[2.5rem] border border-theme/40 bg-card px-8 py-8 shadow-2xl"
             ref={chartRef}
           >
-            <div className="chart-title mb-2 text-sm font-semibold text-slate-200">
-              Occurrences over time
+            <div className="chart-header mb-6 flex justify-between items-center">
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-accent-primary">Temporal Threat Distribution</h3>
+              <div className="px-3 py-1 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-[9px] font-black text-accent-primary tracking-widest">LIVE PULSE</div>
             </div>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={timeseries} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#00bfff" />
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={timeseries} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="10 10" vertical={false} stroke="var(--border-main)" strokeOpacity={0.2} />
+                <XAxis dataKey="date" fontSize={10} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontWeight: 'bold' }} dy={10} />
+                <YAxis allowDecimals={false} fontSize={10} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)' }} />
+                <Tooltip
+                  cursor={{ fill: 'rgba(0,191,255,0.05)' }}
+                  contentStyle={{ backgroundColor: 'var(--bg-sidebar)', border: '1px solid var(--border-main)', borderRadius: '1.25rem', padding: '15px' }}
+                />
+                <Bar dataKey="count" fill="var(--accent-primary)" radius={[8, 8, 4, 4]} barSize={40} fillOpacity={0.8} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           <div
-            className="forensic-details rounded-lg border border-slate-800 bg-slate-950 px-4 py-3"
+            className="forensic-details rounded-[2.5rem] border border-theme/40 bg-card px-8 py-8 shadow-2xl"
             ref={detailsRef}
           >
-            <div className="details-title mb-2 text-sm font-semibold text-slate-200">
-              Detailed Feature Values
+            <div className="details-header mb-8">
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-accent-primary">Deep Flow Fingerprint</h3>
             </div>
-            <div className="details-columns flex flex-col gap-4 md:flex-row">
-              <table className="details-table w-full border-collapse text-sm md:w-auto">
-                <tbody>
-                  {leftEntries.map(([k, v]) => (
-                    <tr key={k}>
-                      <td className="feat-key w-1/2 border-b border-slate-900 px-3 py-2 text-sm text-sky-300">
-                        {k}
-                      </td>
-                      <td className="feat-val w-1/2 border-b border-slate-900 px-3 py-2 text-right text-sm text-slate-100">
-                        {v}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="details-columns grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-1">
+              <div className="flex flex-col">
+                {leftEntries.map(([k, v]) => (
+                  <div key={k} className="flex justify-between items-center py-3 border-b border-theme/30 group hover:bg-hover/30 px-2 rounded-lg transition-colors">
+                    <span className="text-[11px] font-black uppercase tracking-tight text-muted group-hover:text-accent-primary transition-colors">{k}</span>
+                    <span className="text-xs font-mono font-bold text-main">{v}</span>
+                  </div>
+                ))}
+              </div>
 
-              <table className="details-table w-full border-collapse text-sm md:w-auto">
-                <tbody>
-                  {rightEntries.map(([k, v]) => (
-                    <tr key={k}>
-                      <td className="feat-key w-1/2 border-b border-slate-900 px-3 py-2 text-sm text-sky-300">
-                        {k}
-                      </td>
-                      <td className="feat-val w-1/2 border-b border-slate-900 px-3 py-2 text-right text-sm text-slate-100">
-                        {v}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="flex flex-col">
+                {rightEntries.map(([k, v]) => (
+                  <div key={k} className="flex justify-between items-center py-3 border-b border-theme/30 group hover:bg-hover/30 px-2 rounded-lg transition-colors">
+                    <span className="text-[11px] font-black uppercase tracking-tight text-muted group-hover:text-accent-primary transition-colors">{k}</span>
+                    <span className="text-xs font-mono font-bold text-main">{v}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

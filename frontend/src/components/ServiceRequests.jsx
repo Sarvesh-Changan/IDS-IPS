@@ -39,24 +39,26 @@ export default function ServiceRequests() {
   };
 
   return (
-    <div className="service-requests-container mt-4 flex-1 overflow-y-auto bg-slate-950 px-4 py-6 md:px-8">
-      <div className="sr-header mb-8">
-        <h1 className="mb-1 text-2xl font-semibold tracking-tight">Service Requests</h1>
-        <p className="text-sm text-slate-400">Block or Quarantine IP Addresses</p>
+    <div className="service-requests-container mt-4 flex-1 overflow-y-auto bg-main px-4 py-6 md:px-8 transition-colors duration-300">
+      <div className="sr-header mb-10">
+        <h1 className="mb-2 text-2xl font-black uppercase tracking-tight text-accent-primary">Secure Operational Protocols</h1>
+        <p className="text-sm text-muted font-medium">Coordinate Response: Immediate Block or Quarantine Neutralization</p>
       </div>
 
-      <div className="sr-content mx-auto w-full max-w-xl rounded-lg border border-slate-800 bg-slate-950 px-6 py-8 shadow-xl">
-        <div className="ip-input-section mb-8">
+      <div className="sr-content mx-auto w-full max-w-xl rounded-[2.5rem] border border-theme bg-card px-10 py-12 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent-primary/30 to-transparent"></div>
+
+        <div className="ip-input-section mb-10">
           <label
             htmlFor="ip-input"
-            className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-400"
+            className="mb-3 block text-[10px] font-black uppercase tracking-[0.2em] text-muted ml-1"
           >
-            Enter IP Address
+            Tactical IP Coordinate
           </label>
           <input
             id="ip-input"
             type="text"
-            className="ip-input w-full rounded-lg border-2 border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-sky-400 focus:bg-slate-900 focus:shadow-[0_0_16px_rgba(56,189,248,0.35)]"
+            className="ip-input w-full rounded-2xl border border-theme bg-sidebar px-5 py-4 text-sm text-main outline-none transition-all focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10 shadow-inner font-mono font-bold placeholder:text-muted/40"
             placeholder="e.g. 192.168.1.1"
             value={ipAddress}
             onChange={handleIpChange}
@@ -68,15 +70,15 @@ export default function ServiceRequests() {
           />
         </div>
 
-        <div className="button-group flex justify-center gap-4 max-md:flex-col">
+        <div className="button-group flex justify-center gap-6 max-md:flex-col">
           <button
-            className="btn btn-block flex-1 rounded-lg bg-gradient-to-r from-red-400 to-red-500 px-5 py-3 text-sm font-semibold uppercase tracking-wide text-slate-950 shadow-lg transition hover:-translate-y-0.5 hover:shadow-red-500/40"
+            className="btn btn-block flex-1 rounded-2xl bg-accent-danger px-6 py-4 text-xs font-black uppercase tracking-widest text-inverse shadow-xl shadow-accent-danger/20 transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95 flex items-center justify-center gap-2"
             onClick={handleBlock}
           >
-            🚫 Block
+            🚫 Execute Block
           </button>
           <button
-            className="btn btn-quarantine flex-1 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 px-5 py-3 text-sm font-semibold uppercase tracking-wide text-slate-950 shadow-lg transition hover:-translate-y-0.5 hover:shadow-amber-500/40"
+            className="btn btn-quarantine flex-1 rounded-2xl bg-accent-warning px-6 py-4 text-xs font-black uppercase tracking-widest text-inverse shadow-xl shadow-accent-warning/20 transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95 flex items-center justify-center gap-2"
             onClick={handleQuarantine}
           >
             ⛔ Quarantine
@@ -86,22 +88,23 @@ export default function ServiceRequests() {
 
       {showPopup && (
         <div
-          className="popup-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="popup-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
           onClick={closePopup}
         >
           <div
-            className="popup-box w-[90%] max-w-md rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-950 to-slate-900 px-8 py-8 text-center shadow-2xl"
+            className="popup-box w-[90%] max-w-md rounded-[3rem] border border-theme bg-sidebar px-10 py-12 text-center shadow-[0_30px_100px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="popup-icon mb-4 text-4xl text-emerald-400">✓</div>
-            <p className="popup-message mb-6 text-sm text-slate-100">
+            <div className="popup-icon mb-6 text-6xl text-accent-success drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">✓</div>
+            <h3 className="text-lg font-black uppercase tracking-[0.2em] text-main mb-4">Command Acknowledged</h3>
+            <p className="popup-message mb-10 text-sm font-medium text-muted leading-relaxed">
               {popupMessage}
             </p>
             <button
-              className="popup-close-btn rounded-md bg-gradient-to-r from-sky-400 to-sky-500 px-6 py-2 text-xs font-semibold uppercase tracking-wide text-slate-950 shadow-lg hover:-translate-y-0.5 hover:shadow-sky-500/40"
+              className="popup-close-btn w-full rounded-2xl bg-accent-primary px-8 py-4 text-xs font-black uppercase tracking-widest text-inverse shadow-xl shadow-accent-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
               onClick={closePopup}
             >
-              OK
+              Confirm Acknowledge
             </button>
           </div>
         </div>
