@@ -10,14 +10,18 @@ function startAttackGenerator() {
   if (intervalId) clearInterval(intervalId);
   console.log(`[AttackGenerator] Starting with interval ${INTERVAL_MS}ms`);
   intervalId = setInterval(async () => {
-    const srcIP = `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
-    const dstIP = `10.0.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+    const srcIP = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+    const dstIP = `10.0.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
 
     const newAttackData = classifyAttack({ srcIP, dstIP });
 
     try {
+      // Find the last sequential ID
+      const lastAttack = await Attack.findOne().sort('-eventId');
+      const nextEventId = (lastAttack && lastAttack.eventId) ? lastAttack.eventId + 1 : 1;
+
       // Save to database
-      const attack = new Attack(newAttackData);
+      const attack = new Attack({ ...newAttackData, eventId: nextEventId });
       await attack.save();
 
       // Populate assignedTo if needed (none yet)

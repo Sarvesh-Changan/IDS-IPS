@@ -132,7 +132,7 @@ export default function AlertsDashboard() {
     if (!rows || rows.length === 0) return;
     // Convert rows to a flat structure for export
     const exportRows = rows.map(attack => ({
-      'Event ID': attack._id.slice(-6), // short ID
+      'Event ID': String(attack.eventId || 0).padStart(4, '0'), // format as 0001
       'Timestamp': new Date(attack.timestamp).toLocaleString(),
       'Source IP': attack.srcIP,
       'Destination IP': attack.dstIP,
@@ -200,9 +200,8 @@ export default function AlertsDashboard() {
               {[5, 10, 15, 25].map(size => (
                 <button
                   key={size}
-                  className={`filter-item rounded px-3 py-1 text-left text-sm ${
-                    pageSize === size ? 'active bg-sky-500/15 text-sky-300' : 'text-slate-200 hover:bg-slate-800'
-                  }`}
+                  className={`filter-item rounded px-3 py-1 text-left text-sm ${pageSize === size ? 'active bg-sky-500/15 text-sky-300' : 'text-slate-200 hover:bg-slate-800'
+                    }`}
                   onClick={() => {
                     setPageSize(size);
                     setPage(1); // reset to first page
@@ -251,13 +250,12 @@ export default function AlertsDashboard() {
               return (
                 <tr
                   key={attack._id}
-                  className={`border-t border-slate-800/80 text-slate-200 transition-colors hover:bg-sky-500/5 ${
-                    selectedAlerts.includes(attack._id) ? 'selected bg-sky-500/10 text-sky-100' : ''
-                  }`}
+                  className={`border-t border-slate-800/80 text-slate-200 transition-colors hover:bg-sky-500/5 ${selectedAlerts.includes(attack._id) ? 'selected bg-sky-500/10 text-sky-100' : ''
+                    }`}
                 >
                   <td className="px-4 py-3">
                     <span className="source-badge inline-flex rounded-md bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-200">
-                      {attack._id.slice(-6)} {/* short ID */}
+                      {String(attack.eventId || 0).padStart(4, '0')}
                     </span>
                   </td>
                   <td className="px-4 py-3">
