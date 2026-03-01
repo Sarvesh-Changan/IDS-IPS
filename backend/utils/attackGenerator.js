@@ -13,7 +13,7 @@ function startAttackGenerator() {
     const srcIP = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
     const dstIP = `10.0.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
 
-    const newAttackData = classifyAttack({ srcIP, dstIP });
+    const newAttackData = await classifyAttack({ srcIP, dstIP });
 
     try {
       // Find the last sequential ID
