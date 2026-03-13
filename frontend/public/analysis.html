@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Alert Analysis</title>
+  <style>
+    body { background: #0f1419; color: #fff; font-family: Inter, system-ui, Arial, sans-serif; margin:0; padding:24px; }
+    .card { background:#131820; border:1px solid #2d3561; padding:20px; border-radius:8px; max-width:900px; margin:40px auto; }
+    h1 { margin:0 0 12px 0; font-size:20px; }
+    .meta { color:#9aa3b2; margin-bottom:16px }
+    .section { margin-top:12px }
+    .back { display:inline-block; margin-top:18px; background:#00bfff; color:#051225; padding:8px 12px; border-radius:6px; text-decoration:none }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Alert Analysis</h1>
+    <div id="eventId" class="meta">Event: <strong></strong></div>
+    <div class="section">
+      <h3>Summary</h3>
+      <p id="summary">Loading…</p>
+    </div>
+    <div class="section">
+      <h3>Suggested Actions</h3>
+      <ul id="actions">
+        <li>Investigate source IP</li>
+        <li>Quarantine affected host</li>
+        <li>Increase monitoring</li>
+      </ul>
+    </div>
+    <a class="back" href="/">Back to Dashboard</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const event = params.get('event') || 'unknown';
+    document.getElementById('eventId').querySelector('strong').textContent = event;
+    const summary = document.getElementById('summary');
+    summary.textContent = 'This is a placeholder analysis for event ' + event + '. Replace this with real analysis details from your backend.';
+  </script>
+</body>
+</html>
